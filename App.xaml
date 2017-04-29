@@ -1,0 +1,18 @@
+﻿<Application x:Class="Bookcase.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Bookcase"
+             StartupUri="ui\MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="view_res/Colors.xaml"/>
+                <ResourceDictionary Source="view_res/styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="view_res/styles/ComboBoxStyles.xaml"/>
+                <ResourceDictionary Source="view_res/styles/TextBoxStyles.xaml"/>
+                <ResourceDictionary Source="view_res/styles/ToggleButtonStyles.xaml"/>
+                <ResourceDictionary Source="view_res/styles/ListBoxStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

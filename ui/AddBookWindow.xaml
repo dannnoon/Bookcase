@@ -1,0 +1,68 @@
+﻿<Window x:Class="Bookcase.ui.AddBookWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cv="clr-namespace:Bookcase.converters"
+        xmlns:local="clr-namespace:Bookcase.ui"
+        mc:Ignorable="d"
+        Title="Edycja książki" Height="400" Width="800" ResizeMode="NoResize" FontFamily="Times New Roman" FontSize="16" Background="White" Foreground="{StaticResource Secondary}">
+    <Window.DataContext>
+        <local:AddBookWindowVM/>
+    </Window.DataContext>
+    <Window.Resources>
+        <cv:BoolToVisibilityConverter x:Key="BoolVisibleConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="266"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Name="Frame" Grid.Row="0" Grid.Column="0" BorderBrush="{StaticResource SecondaryAlpha}" BorderThickness="2" Margin="8">
+            <Grid>
+                <Button Style="{StaticResource LightButtonStyle}"/>
+                <TextBlock TextWrapping="WrapWithOverflow" Text="Dodaj okładkę" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" TextAlignment="Center" IsHitTestVisible="False"/>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8" VerticalAlignment="Center">
+            <Grid Margin="0, 0, 0, 15">
+                <TextBox Name="TitleBox" MaxLines="1" FontSize="28" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}"/>
+                <TextBlock IsHitTestVisible="False" Text="Podaj tytuł" FontSize="28" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
+                           Visibility="{Binding ElementName=TitleBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
+            </Grid>
+            <Grid Margin="0, 0, 0, 15">
+                <TextBox Name="AuthorBox" MaxLines="1" FontSize="24" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}"/>
+                <TextBlock IsHitTestVisible="False" Text="Podaj autora" FontSize="24" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
+                           Visibility="{Binding ElementName=AuthorBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
+            </Grid>
+            <Grid Margin="0, 0, 0, 15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" FontSize="16" Text="Gatunek" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
+                <ComboBox FontSize="24"  Grid.Row="1"/>
+                <Button Style="{StaticResource StandardButtonStyle}" Content="Dodaj gatunek" Margin="10, 0, 0, 0" Grid.Column="1" FontSize="24" Grid.Row="1"/>
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" FontSize="16" Text="Stan" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
+                <ComboBox FontSize="24"  Grid.Row="1"/>
+            </Grid>
+        </StackPanel>
+        <Button Style="{StaticResource StandardButtonStyle}" FontSize="28" Content="Zapisz" Grid.Row="1" Grid.ColumnSpan="2" Margin="8, 26, 8, 26"/>
+    </Grid>
+</Window>

@@ -1,0 +1,105 @@
+﻿<Window x:Class="Bookcase.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bookcase"
+        xmlns:dc="clr-namespace:Bookcase.ui"
+        xmlns:cv="clr-namespace:Bookcase.converters"
+        mc:Ignorable="d"
+        Title="Biblioteczka"  MinHeight="600" MinWidth="800" FontFamily="Times New Roman" FontSize="16" Background="White">
+    <Window.DataContext>
+        <dc:MainWindowVM/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <cv:BookRowWidthConverter x:Key="BookRowConverter"/>
+        <cv:FrameSizeConverter x:Key="FrameHeightConverter"/>
+        <cv:FrameWidthConverter x:Key="FrameWidthConverter"/>
+        <cv:BoolToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+    </Window.Resources>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="Dodaj" DockPanel.Dock="Top" Margin="10" Grid.Column="0" Grid.Row="0" Style="{StaticResource StandardButtonStyle}" Command="{Binding AddBookCommand}"/>
+        <Grid Grid.Column="0" Grid.Row="1" Margin="10, 0, 10, 10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <RadioButton Grid.Row="0" Content="Wszystkie" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[0]}" BorderThickness="0, 0, 2, 0"/>
+            <RadioButton Grid.Row="1" Content="Przeczytane" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[1]}" BorderThickness="0, 0, 2, 0"/>
+            <RadioButton Grid.Row="2" Content="Zaczęte" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[2]}" BorderThickness="0, 0, 2, 0"/>
+            <RadioButton Grid.Row="3" Content="Nieprzeczytane" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[3]}" BorderThickness="0, 0, 2, 0"/>
+            <RadioButton Grid.Row="4" Content="Nieposiadane" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[4]}" BorderThickness="0, 0, 2, 0"/>
+
+        </Grid>
+
+        <Grid DockPanel.Dock="Top" Margin="10" Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Name="SearchBox" Foreground="{StaticResource Secondary}" Text="{Binding SearchString}" Grid.Column="0" MaxLines="1" Margin="0, 0, 10, 0" Style="{StaticResource StandardTextBox}"/>
+            <TextBlock Foreground="{StaticResource MainAlpha}" Text="Wyszukaj..." Grid.Column="0" Margin="2, 0, 10, 0" VerticalAlignment="Center" IsHitTestVisible="False">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=SearchBox, Path=Text}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <ComboBox Grid.Column="1" SelectedIndex="0" ItemsSource="{Binding Sorters}"/>
+        </Grid>
+        <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Books, Mode=TwoWay}" Margin="0, 10, 20, 20" Name="BookList" Style="{StaticResource StandardListBoxStyle}"
+                 Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Name="BookView" Width="{Binding ElementName=BookList, Path=ActualWidth, Converter={StaticResource BookRowConverter}}" Margin="0, 0, 0, 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Name="Frame" Grid.Column="0" BorderBrush="{StaticResource SecondaryAlpha}" BorderThickness="2"
+                                Width="{Binding ElementName=Frame, Path=ActualHeight, Converter={StaticResource FrameWidthConverter}}"
+                                Height="{Binding ElementName=BookList, Path=ActualHeight, Converter={StaticResource FrameHeightConverter}}">
+                            <Grid Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}}">
+                                <Image Source="../../images/ic_question_mark.png" Stretch="UniformToFill" Margin="2"/>
+                                <Rectangle Margin="2" Fill="{StaticResource Main}">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="../../images/ic_question_mark.png"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Grid>
+                        </Border>
+                        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10, 0, 0, 0">
+                            <TextBlock Text="{Binding Title}" FontSize="28" Foreground="{StaticResource Secondary}"/>
+                            <TextBlock Text="{Binding Author}" Foreground="{StaticResource Main}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="{StaticResource Secondary}" BorderThickness="2" Margin="10, 0, 10, 10"/>
+
+    </Grid>
+</Window>

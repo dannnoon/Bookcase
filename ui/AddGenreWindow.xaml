@@ -1,0 +1,24 @@
+﻿<Window x:Class="Bookcase.ui.AddGenreWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bookcase.ui"
+        xmlns:cv="clr-namespace:Bookcase.converters"
+        mc:Ignorable="d"
+        Title="AddGenreWindow" Height="150" Width="300" WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <local:AddGenreWindowVM/>
+    </Window.DataContext>
+    <Window.Resources>
+        <cv:BoolToVisibilityConverter x:Key="VisibilityConverter"/>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="8" VerticalAlignment="Center">
+        <Grid>
+            <TextBox Name="GenreBox" Margin="0, 0, 0, 20" MaxLines="1" Text="{Binding Genre.Name}" Style="{StaticResource StandardTextBox}" Foreground="{StaticResource Secondary}"/>
+            <TextBlock IsHitTestVisible="False" Visibility="{Binding ElementName=GenreBox, Path=Text.IsEmpty, Converter={StaticResource VisibilityConverter}}" 
+                       Padding="4" Text="Podaj nazwę gatunku" Foreground="{StaticResource SecondaryAlpha}"/>
+        </Grid>
+        <Button Style="{StaticResource StandardButtonStyle}" Content="Zapisz" Margin="20, 0, 20, 0" Command="{Binding SaveGenreCommand}"/>
+    </StackPanel>
+</Window>

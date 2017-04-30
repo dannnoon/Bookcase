@@ -1,4 +1,5 @@
 ﻿using Bookcase.db;
+using Bookcase.dialogs;
 using Bookcase.model;
 using Bookcase.util;
 using PropertyChanged;
@@ -18,10 +19,36 @@ namespace Bookcase.ui
     class MainWindowVM
     {
         public ICommand AddBookCommand { get { return new RelayCommand(AddBookCommandAction); } }
+        public ICommand EditBookCommand { get { return new RelayCommand(EditBookCommandAction); } }
+        public ICommand DeleteBookCommand { get { return new RelayCommand(DeleteBookCommandAction); } }
 
         public ObservableCollection<String> Sorters { get; set; }
         public ObservableCollection<bool> Filters { get; set; }
         public ObservableCollection<Book> Books { get; set; }
+
+        private String SortFilter_;
+        public String SortFilter
+        {
+            get { return SortFilter_; }
+
+            set
+            {
+                SortFilter_ = value;
+                LoadBooks();
+            }
+        }
+
+        private String SearchText_;
+        public String SearchText
+        {
+            get { return SearchText_; }
+
+            set
+            {
+                SearchText_ = value;
+                LoadBooks();
+            }
+        }
 
         public MainWindowVM()
         {
@@ -39,11 +66,60 @@ namespace Bookcase.ui
 
         private void LoadBooks()
         {
+            List<Book> books;
             FilterType selectedFilter = GetSelectedFilterType();
+
             if (selectedFilter != FilterType.ALL)
-                Books = new ObservableCollection<Book>(BooksDAO.GetBooksByFilter(selectedFilter));
+                books = new List<Book>(BooksDAO.GetBooksByFilter(selectedFilter));
             else
-                Books = new ObservableCollection<Book>(BooksDAO.GetAllBooks());
+                books = new List<Book>(BooksDAO.GetAllBooks());
+
+            SearchForBooks(books);
+            SortBooks(books);
+
+            Books = new ObservableCollection<Book>(books);
+        }
+
+        private void SearchForBooks(List<Book> books)
+        {
+            if (books.Count > 0 && !String.IsNullOrWhiteSpace(SearchText_))
+            {
+                Dictionary<String, List<Book>> searchActions = new Dictionary<String, List<Book>>()
+                {
+                    { Properties.Resources.AuthorText, books.Where((x) => x.Author.ToLower().Contains(SearchText_.ToLower())).ToList() },
+                    { Properties.Resources.TitleText, books.Where((x) => x.Title.ToLower().Contains(SearchText_.ToLower())).ToList() },
+                    { Properties.Resources.GenreText, books.Where((x) => x.Genre.Name.ToLower().Contains(SearchText_.ToLower())).ToList() }
+                };
+
+                List<Book> searched;
+
+                if (searchActions.TryGetValue(SortFilter_, out searched))
+                {
+                    books.Clear();
+                    books.InsertRange(0, searched);
+                }
+            }
+        }
+
+        private void SortBooks(List<Book> books)
+        {
+            if (books.Count > 0 && !String.IsNullOrEmpty(SortFilter_))
+            {
+                Dictionary<String, List<Book>> sortActions = new Dictionary<String, List<Book>>()
+                {
+                    { Properties.Resources.AuthorText, books.OrderBy((x) => x.Author).ToList() },
+                    { Properties.Resources.TitleText, books.OrderBy((x) => x.Title).ToList() },
+                    { Properties.Resources.GenreText, books.OrderBy((x) => x.Genre.Name).ToList() }
+                };
+
+                List<Book> sorted;
+
+                if (sortActions.TryGetValue(SortFilter_, out sorted))
+                {
+                    books.Clear();
+                    books.InsertRange(0, sorted);
+                }
+            }
         }
 
         private FilterType GetSelectedFilterType()
@@ -57,12 +133,46 @@ namespace Bookcase.ui
             return FilterType.ALL;
         }
 
-        private void AddBookCommandAction()
+        private void AddBookCommandAction(Object paramter)
         {
-            AddBookWindow window = new AddBookWindow();
+            var window = new AddBookWindow();
             if (window.ShowDialog() == true)
             {
+                var data = (AddBookWindowVM)window.DataContext;
+                var filter = GetSelectedFilterType();
 
+                if (data.Book.Filter == filter || filter == FilterType.ALL)
+                {
+                    LoadBooks();
+                }
+            }
+        }
+
+        private void EditBookCommandAction(Object parameter)
+        {
+            Book book = parameter as Book;
+
+            var window = new AddBookWindow();
+
+            var data = (AddBookWindowVM)window.DataContext;
+            data.Book = book;
+
+            if (window.ShowDialog() == true)
+                LoadBooks();
+        }
+
+        private void DeleteBookCommandAction(Object parameter)
+        {
+            var book = (Book)parameter;
+            var dialog = new SimpleYesNoDialog();
+            var data = (SimpleYesNoDialogVM)dialog.DataContext;
+
+            data.InitDialog("Usuwanie książki", "Jesteś pewien, że chcesz usunąć książkę?", "Nie", "Tak");
+
+            if (dialog.ShowDialog() == true)
+            {
+                BooksDAO.DeleteBook(book.BookId);
+                LoadBooks();
             }
         }
 

@@ -6,12 +6,13 @@
         xmlns:cv="clr-namespace:Bookcase.converters"
         xmlns:local="clr-namespace:Bookcase.ui"
         mc:Ignorable="d"
-        Title="Edycja książki" Height="400" Width="800" ResizeMode="NoResize" FontFamily="Times New Roman" FontSize="16" Background="White" Foreground="{StaticResource Secondary}">
+        Title="Edycja książki" Height="400" Width="800" ResizeMode="NoResize" FontFamily="Times New Roman" FontSize="16" Background="White" Foreground="{StaticResource Secondary}" WindowStartupLocation="CenterOwner">
     <Window.DataContext>
         <local:AddBookWindowVM/>
     </Window.DataContext>
     <Window.Resources>
         <cv:BoolToVisibilityConverter x:Key="BoolVisibleConverter"/>
+        <cv:StringToFilterTypeConverter x:Key="FilterTypeConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -32,12 +33,12 @@
 
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8" VerticalAlignment="Center">
             <Grid Margin="0, 0, 0, 15">
-                <TextBox Name="TitleBox" MaxLines="1" FontSize="28" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}"/>
+                <TextBox Name="TitleBox" MaxLines="1" FontSize="28" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}" Text="{Binding Book.Title}"/>
                 <TextBlock IsHitTestVisible="False" Text="Podaj tytuł" FontSize="28" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
                            Visibility="{Binding ElementName=TitleBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
             </Grid>
             <Grid Margin="0, 0, 0, 15">
-                <TextBox Name="AuthorBox" MaxLines="1" FontSize="24" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}"/>
+                <TextBox Name="AuthorBox" MaxLines="1" FontSize="24" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}" Text="{Binding Book.Author}"/>
                 <TextBlock IsHitTestVisible="False" Text="Podaj autora" FontSize="24" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
                            Visibility="{Binding ElementName=AuthorBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
             </Grid>
@@ -51,8 +52,8 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" FontSize="16" Text="Gatunek" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
-                <ComboBox FontSize="24"  Grid.Row="1"/>
-                <Button Style="{StaticResource StandardButtonStyle}" Content="Dodaj gatunek" Margin="10, 0, 0, 0" Grid.Column="1" FontSize="24" Grid.Row="1"/>
+                <ComboBox FontSize="24"  Grid.Row="1" ItemsSource="{Binding Genres}" DisplayMemberPath="Name" SelectedValue="{Binding Book.GenreId}" SelectedValuePath="GenreId" SelectedIndex="0"/>
+                <Button Style="{StaticResource StandardButtonStyle}" Content="Dodaj gatunek" Margin="10, 0, 0, 0" Grid.Column="1" FontSize="24" Grid.Row="1" Command="{Binding AddGenreCommand}"/>
             </Grid>
             <Grid>
                 <Grid.RowDefinitions>
@@ -60,9 +61,9 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" FontSize="16" Text="Stan" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
-                <ComboBox FontSize="24"  Grid.Row="1"/>
+                <ComboBox FontSize="24"  Grid.Row="1" ItemsSource="{Binding Filters}" SelectedItem="{Binding Book.Filter, Converter={StaticResource FilterTypeConverter}}"/>
             </Grid>
         </StackPanel>
-        <Button Style="{StaticResource StandardButtonStyle}" FontSize="28" Content="Zapisz" Grid.Row="1" Grid.ColumnSpan="2" Margin="8, 26, 8, 26"/>
+        <Button Style="{StaticResource StandardButtonStyle}" FontSize="28" Content="Zapisz" Grid.Row="1" Grid.ColumnSpan="2" Margin="8, 26, 8, 26" Command="{Binding SaveBookCommand}"/>
     </Grid>
 </Window>

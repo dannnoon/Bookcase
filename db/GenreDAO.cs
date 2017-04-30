@@ -15,6 +15,7 @@ namespace Bookcase.db
             using (var db = new BookcaseDB())
             {
                 db.Genres.Add(genre);
+                db.SaveChanges();
             }
         }
 
@@ -24,6 +25,14 @@ namespace Bookcase.db
             {
                 var genres = from b in db.Genres select b;
                 return genres.ToArray();
+            }
+        }
+
+        public static Genre GetGenreById(int id)
+        {
+            using (var db = new BookcaseDB())
+            {
+                return (from b in db.Genres where b.GenreId == id select b).First();
             }
         }
     }

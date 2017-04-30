@@ -17,17 +17,17 @@ using System.Windows.Shapes;
 namespace Bookcase.ui
 {
     /// <summary>
-    /// Interaction logic for AddBookWindow.xaml
+    /// Interaction logic for AddGenreWindow.xaml
     /// </summary>
-    public partial class AddBookWindow : Window
+    public partial class AddGenreWindow : Window
     {
-        public AddBookWindow()
+        public AddGenreWindow()
         {
             InitializeComponent();
 
             try
             {
-                var context = DataContext as BaseDialogWindowVM;
+                var context = (BaseDialogWindowVM)DataContext;
                 context.CloseDialog += OnCloseDialog;
             }
             catch { }

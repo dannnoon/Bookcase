@@ -87,21 +87,40 @@
     </ApplicationDefinition>
     <Compile Include="converters\BookRowWidthConverter.cs" />
     <Compile Include="converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="converters\StringToFilterTypeConverter.cs" />
     <Compile Include="converters\FrameSizeConverter.cs" />
     <Compile Include="converters\FrameWidthConverter.cs" />
     <Compile Include="db\BookcaseDB.cs" />
+    <Compile Include="dialogs\SimpleYesNoDialog.xaml.cs">
+      <DependentUpon>SimpleYesNoDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="dialogs\SimpleYesNoDialogVM.cs" />
+    <Compile Include="model\DialogEventArgs.cs" />
     <Compile Include="model\FilterType.cs" />
     <Compile Include="model\Genre.cs" />
     <Compile Include="ui\AddBookWindow.xaml.cs">
       <DependentUpon>AddBookWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ui\AddBookWindowVM.cs" />
+    <Compile Include="ui\AddGenreWindow.xaml.cs">
+      <DependentUpon>AddGenreWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ui\AddGenreWindowVM.cs" />
+    <Compile Include="ui\uibases\BaseDialogWindowVM.cs" />
     <Compile Include="ui\MainWindowVM.cs" />
     <Compile Include="db\BooksDAO.cs" />
     <Compile Include="util\DefaultsUtils.cs" />
     <Compile Include="db\GenreDAO.cs" />
     <Compile Include="util\RelayCommand.cs" />
+    <Page Include="dialogs\SimpleYesNoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ui\AddBookWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ui\AddGenreWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

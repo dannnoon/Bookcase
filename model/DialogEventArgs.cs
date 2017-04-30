@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace Bookcase.model
 {
-    class Genre
+    public class DialogEventArgs : EventArgs
     {
-        public int GenreId { get; set; }
+        public bool Result { get; private set; }
 
-        public String Name { get; set; }
-
-        public Genre()
+        public DialogEventArgs(bool result)
         {
-
+            Result = result;
         }
     }
 }

@@ -9,19 +9,21 @@ namespace Bookcase.util
 {
     public class RelayCommand : ICommand
     {
-        private readonly Func<Boolean> _canExecute;
-        private readonly Action _execute;
+        public delegate void ExecuteHandler(Object parameter);
 
-        public RelayCommand(Action execute)
+        private readonly Func<Boolean> _canExecute;
+        private event ExecuteHandler _execute;
+        
+        public RelayCommand(ExecuteHandler execute)
           : this(execute, null)
         {
         }
 
-        public RelayCommand(Action execute, Func<Boolean> canExecute)
+        public RelayCommand(ExecuteHandler execute, Func<Boolean> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
-            _execute = execute;
+            _execute += execute;
             _canExecute = canExecute;
         }
 
@@ -46,7 +48,7 @@ namespace Bookcase.util
 
         public void Execute(Object parameter)
         {
-            _execute();
+            _execute?.Invoke(parameter);
         }
     }
 }

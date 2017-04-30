@@ -10,7 +10,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ContentPresenter.Content>
+                                <TextBlock Text="{TemplateBinding Content}" Padding="{TemplateBinding Padding}"/>
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

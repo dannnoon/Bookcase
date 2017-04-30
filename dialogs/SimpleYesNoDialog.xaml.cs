@@ -1,5 +1,4 @@
 ﻿using Bookcase.model;
-using Bookcase.ui.uibases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,23 +13,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Bookcase.ui
+namespace Bookcase.dialogs
 {
     /// <summary>
-    /// Interaction logic for AddBookWindow.xaml
+    /// Interaction logic for SimpleYesNoDialog.xaml
     /// </summary>
-    public partial class AddBookWindow : Window
+    public partial class SimpleYesNoDialog : Window
     {
-        public AddBookWindow()
+        public SimpleYesNoDialog()
         {
             InitializeComponent();
 
-            try
-            {
-                var context = DataContext as BaseDialogWindowVM;
-                context.CloseDialog += OnCloseDialog;
-            }
-            catch { }
+            var context = (SimpleYesNoDialogVM)DataContext;
+            context.CloseDialog += OnCloseDialog;
         }
 
         private void OnCloseDialog(DialogEventArgs args)

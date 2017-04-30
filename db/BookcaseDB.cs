@@ -10,6 +10,12 @@ namespace Bookcase.db
 {
     class BookcaseDB : DbContext
     {
+        public BookcaseDB()
+        {
+            Configuration.LazyLoadingEnabled = true;
+            Configuration.ProxyCreationEnabled = true;
+        }
+
         public DbSet<Book> Books { get; set; }
         public DbSet<Genre> Genres { get; set; }
     }

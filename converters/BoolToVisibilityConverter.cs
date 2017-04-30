@@ -16,11 +16,18 @@ namespace Bookcase.converters
             if (value != null)
             {
                 bool visible = (bool)value;
+
+                if (parameter != null)
+                {
+                    if ((bool)parameter)
+                        visible = !visible;
+                }
+
                 return visible ? Visibility.Visible : Visibility.Collapsed;
             }
             else
             {
-                return false;
+                return Visibility.Collapsed;
             }
         }
 
@@ -29,11 +36,18 @@ namespace Bookcase.converters
             if (value != null)
             {
                 Visibility visibility = (Visibility)value;
-                return visibility == Visibility.Visible;
+                bool flip = false;
+
+                if (parameter != null)
+                {
+                    flip = (bool)parameter;
+                }
+
+                return flip ? visibility == Visibility.Collapsed : visibility == Visibility.Visible;
             }
             else
             {
-                return Visibility.Collapsed;
+                return false;
             }
         }
     }

@@ -53,9 +53,10 @@
                                                   Margin="{TemplateBinding Padding}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"/>
 
-                            <Rectangle Grid.Column="1" Grid.Row="1" Fill="#FFE9EEF4"/>
+                            <Rectangle Grid.Column="1" Grid.Row="1" Fill="{StaticResource MainAlpha}" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                       Width="10" Height="10" Visibility="{Binding ElementName=PART_HorizontalScrollBar, Path=Visibility}"/>
 
-                            <ScrollBar x:Name="PART_VerticalScrollBar" Width="8"
+                            <ScrollBar x:Name="PART_VerticalScrollBar" Width="10"
                                      IsTabStop="False"
                                      Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                      Grid.Column="1" Grid.Row="0" Orientation="Vertical"
@@ -63,9 +64,9 @@
                                      Maximum="{TemplateBinding ScrollableHeight}"
                                      Minimum="0"
                                      Value="{TemplateBinding VerticalOffset}"
-                                     Margin="0,-1,-1,-1"/>
+                                     Margin="0"/>
 
-                            <ScrollBar x:Name="PART_HorizontalScrollBar" Height="8"
+                            <ScrollBar x:Name="PART_HorizontalScrollBar" Height="10"
                                      IsTabStop="False"
                                      Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                      Grid.Column="0" Grid.Row="1" Orientation="Horizontal"
@@ -73,7 +74,7 @@
                                      Maximum="{TemplateBinding ScrollableWidth}"
                                      Minimum="0"
                                      Value="{TemplateBinding HorizontalOffset}"
-                                     Margin="-1,0,-1,-1"/>
+                                     Margin="0"/>
 
                         </Grid>
                     </Border>
@@ -93,7 +94,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag" Value="Horizontal">
                             <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                            <Setter TargetName="Rectangle1" Property="Height" Value="7" />
+                            <Setter TargetName="Rectangle1" Property="Height" Value="10" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -151,7 +152,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="Width" Value="Auto" />
-                            <Setter Property="Height" Value="8" />
+                            <Setter Property="Height" Value="10" />
                             <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
                             <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
                             <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />

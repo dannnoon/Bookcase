@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:Bookcase"
         xmlns:dc="clr-namespace:Bookcase.ui"
         xmlns:cv="clr-namespace:Bookcase.converters"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Biblioteczka"  MinHeight="600" MinWidth="800" FontFamily="Times New Roman" FontSize="16" Background="White">
     <Window.DataContext>
         <dc:MainWindowVM/>
     </Window.DataContext>
     <Window.Resources>
+        <sys:Boolean x:Key="BoolFalse">false</sys:Boolean>
+        <sys:Boolean x:Key="BoolTrue">true</sys:Boolean>
         <Style TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
@@ -30,7 +33,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Content="Dodaj" DockPanel.Dock="Top" Margin="10" Grid.Column="0" Grid.Row="0" Style="{StaticResource StandardButtonStyle}" Command="{Binding AddBookCommand}"/>
+        <Button Content="Dodaj" DockPanel.Dock="Top" Margin="10" Grid.Column="0" Grid.Row="0" Style="{StaticResource StandardButtonStyle}" Command="{Binding AddBookCommand}" />
         <Grid Grid.Column="0" Grid.Row="1" Margin="10, 0, 10, 10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -54,7 +57,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox Name="SearchBox" Foreground="{StaticResource Secondary}" Text="{Binding SearchString}" Grid.Column="0" MaxLines="1" Margin="0, 0, 10, 0" Style="{StaticResource StandardTextBox}"/>
+            <TextBox Name="SearchBox" Foreground="{StaticResource Secondary}" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" MaxLines="1" Margin="0, 0, 10, 0" Style="{StaticResource StandardTextBox}"/>
             <TextBlock Foreground="{StaticResource MainAlpha}" Text="Wyszukaj..." Grid.Column="0" Margin="2, 0, 10, 0" VerticalAlignment="Center" IsHitTestVisible="False">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
@@ -67,13 +70,13 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <ComboBox Grid.Column="1" SelectedIndex="0" ItemsSource="{Binding Sorters}"/>
+            <ComboBox Grid.Column="1" SelectedIndex="0" ItemsSource="{Binding Sorters}" SelectedItem="{Binding SortFilter}"/>
         </Grid>
         <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Books, Mode=TwoWay}" Margin="0, 10, 20, 20" Name="BookList" Style="{StaticResource StandardListBoxStyle}"
-                 Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Name="BookView" Width="{Binding ElementName=BookList, Path=ActualWidth, Converter={StaticResource BookRowConverter}}" Margin="0, 0, 0, 5">
+                    <Grid Name="BookView" Margin="0, 0, 0, 8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -81,18 +84,18 @@
                         <Border Name="Frame" Grid.Column="0" BorderBrush="{StaticResource SecondaryAlpha}" BorderThickness="2"
                                 Width="{Binding ElementName=Frame, Path=ActualHeight, Converter={StaticResource FrameWidthConverter}}"
                                 Height="{Binding ElementName=BookList, Path=ActualHeight, Converter={StaticResource FrameHeightConverter}}">
-                            <Grid Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}}">
-                                <Image Source="../../images/ic_question_mark.png" Stretch="UniformToFill" Margin="2"/>
-                                <Rectangle Margin="2" Fill="{StaticResource Main}">
-                                    <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="../../images/ic_question_mark.png"/>
-                                    </Rectangle.OpacityMask>
-                                </Rectangle>
-                            </Grid>
+                            <TextBlock Text="Brak okładki" Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter={StaticResource BoolTrue}}" 
+                                       Foreground="{StaticResource SecondaryAlpha}" TextWrapping="WrapWithOverflow" FontSize="32" TextAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10, 0, 0, 0">
                             <TextBlock Text="{Binding Title}" FontSize="28" Foreground="{StaticResource Secondary}"/>
                             <TextBlock Text="{Binding Author}" Foreground="{StaticResource Main}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom" Margin="10, 0, 0, 0">
+                            <Button Style="{StaticResource LightButtonStyle}" Content="Edytuj" FontSize="12"  Padding="8" Foreground="{StaticResource MainAlpha}"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.EditBookCommand}" CommandParameter="{Binding}"/>
+                            <Button Style="{StaticResource LightButtonStyle}" Content="Usuń" FontSize="12" Padding="8" Foreground="{StaticResource MainAlpha}" 
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.DeleteBookCommand}" CommandParameter="{Binding}"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

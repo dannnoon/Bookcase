@@ -15,7 +15,7 @@ namespace Bookcase.model
         public String CoverUri { get; set; }
 
         public int GenreId { get; set; }
-        public virtual Genre Genre { get; set; }
+        public Genre Genre { get; set; }
 
         public FilterType Filter { get; set; }
 

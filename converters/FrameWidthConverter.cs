@@ -13,7 +13,7 @@ namespace Bookcase.converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             double height = (double)value;
-            return height * 0.75;
+            return height * 0.625;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -21,6 +21,7 @@ namespace Bookcase.ui
         public ICommand AddBookCommand { get { return new RelayCommand(AddBookCommandAction); } }
         public ICommand EditBookCommand { get { return new RelayCommand(EditBookCommandAction); } }
         public ICommand DeleteBookCommand { get { return new RelayCommand(DeleteBookCommandAction); } }
+        public ICommand NoteCommand { get { return new RelayCommand(NoteCommandAction); } }
 
         public ObservableCollection<String> Sorters { get; set; }
         public ObservableCollection<bool> Filters { get; set; }
@@ -64,6 +65,80 @@ namespace Bookcase.ui
             LoadBooks();
         }
 
+        private void AddBookCommandAction(Object paramter)
+        {
+            var window = new AddBookWindow();
+            if (window.ShowDialog() == true)
+            {
+                var data = (AddBookWindowVM)window.DataContext;
+                var filter = GetSelectedFilterType();
+
+                if (data.Book.Filter == filter || (filter == FilterType.ALL && filter != FilterType.NOT_OWNED))
+                {
+                    LoadBooks();
+                }
+            }
+        }
+
+        private void EditBookCommandAction(Object parameter)
+        {
+            Book book = parameter as Book;
+
+            var window = new AddBookWindow();
+
+            var data = (AddBookWindowVM)window.DataContext;
+            data.Book = new Book(book);
+
+            if (window.ShowDialog() == true)
+            {
+                Books.Remove(book);
+
+                var updatedBooks = BooksDAO.GetBookById(book.BookId);
+                var filter = GetSelectedFilterType();
+
+                if (updatedBooks.Filter == filter || (filter == FilterType.ALL && filter != FilterType.NOT_OWNED))
+                {
+                    Books.Add(updatedBooks);
+                    RefreshBooks();
+                }
+            }
+        }
+
+        private void DeleteBookCommandAction(Object parameter)
+        {
+            var book = (Book)parameter;
+            var dialog = new SimpleYesNoDialog();
+            var data = (SimpleYesNoDialogVM)dialog.DataContext;
+
+            data.InitDialog("Usuwanie", String.Format("Jesteś pewien, że chcesz usunąć: {0}?", book.Title), "Nie", "Tak");
+
+            if (dialog.ShowDialog() == true)
+            {
+                Books.Remove(book);
+                BooksDAO.DeleteBook(book.BookId);
+            }
+        }
+
+        private void NoteCommandAction(Object parameter)
+        {
+            var book = parameter as Book;
+            var dialog = new SimpleInputTextDialog();
+            var context = dialog.DataContext as SimpleInputTextDialogVM;
+
+            context.InitDialog("Notatka", "Poniżej możesz wpisać treść notatki.", "Anuluj", "Zapisz", "Wpisz treść...");
+            context.InputValue = book.Note;
+
+            if (dialog.ShowDialog() == true)
+            {
+                var copy = new Book(book);
+                copy.Note = context.InputValue;
+
+                BooksDAO.AddBook(copy);
+
+                book.Note = context.InputValue;
+            }
+        }
+
         private void LoadBooks()
         {
             List<Book> books;
@@ -72,7 +147,17 @@ namespace Bookcase.ui
             if (selectedFilter != FilterType.ALL)
                 books = new List<Book>(BooksDAO.GetBooksByFilter(selectedFilter));
             else
-                books = new List<Book>(BooksDAO.GetAllBooks());
+                books = new List<Book>(BooksDAO.GetOwnedBooks());
+
+            SearchForBooks(books);
+            SortBooks(books);
+
+            Books = new ObservableCollection<Book>(books);
+        }
+
+        private void RefreshBooks()
+        {
+            List<Book> books = Books.ToList();
 
             SearchForBooks(books);
             SortBooks(books);
@@ -131,49 +216,6 @@ namespace Bookcase.ui
             }
 
             return FilterType.ALL;
-        }
-
-        private void AddBookCommandAction(Object paramter)
-        {
-            var window = new AddBookWindow();
-            if (window.ShowDialog() == true)
-            {
-                var data = (AddBookWindowVM)window.DataContext;
-                var filter = GetSelectedFilterType();
-
-                if (data.Book.Filter == filter || filter == FilterType.ALL)
-                {
-                    LoadBooks();
-                }
-            }
-        }
-
-        private void EditBookCommandAction(Object parameter)
-        {
-            Book book = parameter as Book;
-
-            var window = new AddBookWindow();
-
-            var data = (AddBookWindowVM)window.DataContext;
-            data.Book = book;
-
-            if (window.ShowDialog() == true)
-                LoadBooks();
-        }
-
-        private void DeleteBookCommandAction(Object parameter)
-        {
-            var book = (Book)parameter;
-            var dialog = new SimpleYesNoDialog();
-            var data = (SimpleYesNoDialogVM)dialog.DataContext;
-
-            data.InitDialog("Usuwanie książki", "Jesteś pewien, że chcesz usunąć książkę?", "Nie", "Tak");
-
-            if (dialog.ShowDialog() == true)
-            {
-                BooksDAO.DeleteBook(book.BookId);
-                LoadBooks();
-            }
         }
 
     }

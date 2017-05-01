@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Bookcase.ui"
         xmlns:cv="clr-namespace:Bookcase.converters"
         mc:Ignorable="d"
-        Title="AddGenreWindow" Height="150" Width="300" WindowStartupLocation="CenterOwner">
+        Title="Dodawanie gatunku" Height="150" Width="300" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:AddGenreWindowVM/>
     </Window.DataContext>

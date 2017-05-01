@@ -4,4 +4,6 @@
     <SolidColorBrush x:Key="Secondary">#7A7677</SolidColorBrush>
     <SolidColorBrush x:Key="MainAlpha">#338C8889</SolidColorBrush>
     <SolidColorBrush x:Key="Main">#8C8889</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkAlpha">#997A7677</SolidColorBrush>
+    <SolidColorBrush x:Key="RedAlpha">#DDff6961</SolidColorBrush>
 </ResourceDictionary>

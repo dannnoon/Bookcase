@@ -117,32 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AuthorText" xml:space="preserve">
-    <value>Autor</value>
+  <data name="Target" xml:space="preserve">
+    <value>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</value>
   </data>
-  <data name="FilterTypeAll" xml:space="preserve">
-    <value>Wszystkie</value>
-  </data>
-  <data name="FilterTypeNotOwned" xml:space="preserve">
-    <value>Nieposiadane</value>
-  </data>
-  <data name="FilterTypeNotRead" xml:space="preserve">
-    <value>Niezaczęte</value>
-  </data>
-  <data name="FilterTypeRead" xml:space="preserve">
-    <value>Przeczytane</value>
-  </data>
-  <data name="FilterTypeStarted" xml:space="preserve">
-    <value>Zaczęte</value>
-  </data>
-  <data name="GenreText" xml:space="preserve">
-    <value>Gatunek</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ic_question_mark" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\ic_question_mark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TitleText" xml:space="preserve">
-    <value>Tytuł</value>
+  <data name="DefaultSchema" xml:space="preserve">
+    <value>dbo</value>
   </data>
 </root>

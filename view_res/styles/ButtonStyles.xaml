@@ -45,4 +45,17 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="AlphaButtonStyle" BasedOn="{StaticResource StandardButtonStyle}" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource DarkAlpha}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SecondaryAlpha}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainAlpha}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

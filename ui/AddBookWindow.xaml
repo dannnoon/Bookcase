@@ -5,14 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:cv="clr-namespace:Bookcase.converters"
         xmlns:local="clr-namespace:Bookcase.ui"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Edycja książki" Height="400" Width="800" ResizeMode="NoResize" FontFamily="Times New Roman" FontSize="16" Background="White" Foreground="{StaticResource Secondary}" WindowStartupLocation="CenterOwner">
+        Title="Edycja książki" Height="400" Width="800" ResizeMode="NoResize" 
+        FontFamily="Times New Roman" FontSize="16" Background="White" Foreground="{StaticResource Secondary}" 
+        WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:AddBookWindowVM/>
     </Window.DataContext>
     <Window.Resources>
         <cv:BoolToVisibilityConverter x:Key="BoolVisibleConverter"/>
         <cv:StringToFilterTypeConverter x:Key="FilterTypeConverter"/>
+        <sys:Boolean x:Key="BoolTrue">true</sys:Boolean>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,23 +30,48 @@
 
         <Border Name="Frame" Grid.Row="0" Grid.Column="0" BorderBrush="{StaticResource SecondaryAlpha}" BorderThickness="2" Margin="8">
             <Grid>
-                <Button Style="{StaticResource LightButtonStyle}"/>
-                <TextBlock TextWrapping="WrapWithOverflow" Text="Dodaj okładkę" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" TextAlignment="Center" IsHitTestVisible="False"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button Style="{StaticResource LightButtonStyle}" Command="{Binding PickCoverImageCommand}" Grid.Row="0"/>
+                <TextBlock TextWrapping="WrapWithOverflow" Text="Wybierz okładkę" HorizontalAlignment="Center" 
+                           Visibility="{Binding Book.HasCover, Converter={StaticResource BoolVisibleConverter}, ConverterParameter={StaticResource BoolTrue}}"
+                           VerticalAlignment="Center" FontSize="32" TextAlignment="Center" IsHitTestVisible="False" Grid.Row="0"/>
+
+                <Button Style="{StaticResource LightButtonStyle}" Command="{Binding DownloadCoverImageCommand}" Grid.Row="1"/>
+                <TextBlock TextWrapping="WrapWithOverflow" Text="Pobierz okładkę" HorizontalAlignment="Center" 
+                           Visibility="{Binding Book.HasCover, Converter={StaticResource BoolVisibleConverter}, ConverterParameter={StaticResource BoolTrue}}"
+                           VerticalAlignment="Center" FontSize="32" TextAlignment="Center" IsHitTestVisible="False" Grid.Row="1"/>
+
+                <Image Source="{Binding Book.Cover}" Visibility="{Binding Book.HasCover, Converter={StaticResource BoolVisibleConverter}}" 
+                       IsHitTestVisible="{Binding Book.HasCover}" Stretch="Fill" Grid.RowSpan="2"/>
+                <Button Visibility="{Binding Book.HasCover, Converter={StaticResource BoolVisibleConverter}}" Content="Usuń" Style="{StaticResource AlphaButtonStyle}"
+                        VerticalAlignment="Bottom" Command="{Binding DeleteCoverCommand}" Grid.RowSpan="2"/>
             </Grid>
         </Border>
 
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8" VerticalAlignment="Center">
-            <Grid Margin="0, 0, 0, 15">
-                <TextBox Name="TitleBox" MaxLines="1" FontSize="28" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}" Text="{Binding Book.Title}"/>
-                <TextBlock IsHitTestVisible="False" Text="Podaj tytuł" FontSize="28" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
+            <Grid Margin="0, 0, 0, 10">
+                <TextBox Name="TitleBox" MaxLines="1" FontSize="24" VerticalContentAlignment="Center" Foreground="{StaticResource Main}"
+                         Style="{StaticResource StandardTextBox}" Text="{Binding Book.Title}"/>
+                <TextBlock IsHitTestVisible="False" Text="Podaj tytuł" FontSize="24" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
                            Visibility="{Binding ElementName=TitleBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
             </Grid>
-            <Grid Margin="0, 0, 0, 15">
-                <TextBox Name="AuthorBox" MaxLines="1" FontSize="24" VerticalContentAlignment="Center" Style="{StaticResource StandardTextBox}" Text="{Binding Book.Author}"/>
-                <TextBlock IsHitTestVisible="False" Text="Podaj autora" FontSize="24" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
+            <Grid Margin="0, 0, 0, 10">
+                <TextBox Name="AuthorBox" MaxLines="1" FontSize="20" VerticalContentAlignment="Center" Foreground="{StaticResource Main}"
+                         Style="{StaticResource StandardTextBox}" Text="{Binding Book.Author}"/>
+                <TextBlock IsHitTestVisible="False" Text="Podaj autora" FontSize="20" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
                            Visibility="{Binding ElementName=AuthorBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
             </Grid>
-            <Grid Margin="0, 0, 0, 15">
+            <Grid Margin="0, 0, 0, 10">
+                <TextBox Name="PublicationBox" MaxLines="1" FontSize="20" VerticalContentAlignment="Center" Foreground="{StaticResource Main}"
+                         Style="{StaticResource StandardTextBox}" Text="{Binding Book.PublicationDate}" />
+                <TextBlock IsHitTestVisible="False" Text="Podaj rok wydania" FontSize="20" Foreground="{StaticResource SecondaryAlpha}" Padding="4"
+                           Visibility="{Binding ElementName=PublicationBox, Path=Text.IsEmpty, Converter={StaticResource BoolVisibleConverter}}"/>
+            </Grid>
+            <Grid Margin="0, 0, 0, 10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="4*"/>
@@ -52,8 +81,11 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" FontSize="16" Text="Gatunek" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
-                <ComboBox FontSize="24"  Grid.Row="1" ItemsSource="{Binding Genres}" DisplayMemberPath="Name" SelectedValue="{Binding Book.GenreId}" SelectedValuePath="GenreId" SelectedIndex="0"/>
-                <Button Style="{StaticResource StandardButtonStyle}" Content="Dodaj gatunek" Margin="10, 0, 0, 0" Grid.Column="1" FontSize="24" Grid.Row="1" Command="{Binding AddGenreCommand}"/>
+                <ComboBox FontSize="20"  Grid.Row="1" ItemsSource="{Binding Genres}" DisplayMemberPath="Name" 
+                          SelectedValue="{Binding Book.GenreId}" SelectedValuePath="GenreId" SelectedIndex="0"
+                          HorizontalContentAlignment="Center"/>
+                <Button Style="{StaticResource StandardButtonStyle}" Content="Dodaj gatunek" Margin="10, 0, 0, 0" 
+                        Grid.Column="1" FontSize="20" Grid.Row="1" Command="{Binding AddGenreCommand}"/>
             </Grid>
             <Grid>
                 <Grid.RowDefinitions>
@@ -61,9 +93,10 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" FontSize="16" Text="Stan" HorizontalAlignment="Center" Margin="0, 0, 0, 4" />
-                <ComboBox FontSize="24"  Grid.Row="1" ItemsSource="{Binding Filters}" SelectedItem="{Binding Book.Filter, Converter={StaticResource FilterTypeConverter}}"/>
+                <ComboBox FontSize="20"  Grid.Row="1" ItemsSource="{Binding Filters}" SelectedItem="{Binding Book.Filter, Converter={StaticResource FilterTypeConverter}}" 
+                          HorizontalContentAlignment="Center"/>
             </Grid>
         </StackPanel>
-        <Button Style="{StaticResource StandardButtonStyle}" FontSize="28" Content="Zapisz" Grid.Row="1" Grid.ColumnSpan="2" Margin="8, 26, 8, 26" Command="{Binding SaveBookCommand}"/>
+        <Button Style="{StaticResource StandardButtonStyle}" FontSize="20" Content="Zapisz" Grid.Row="1" Grid.ColumnSpan="2" Margin="8, 32, 8, 32" Command="{Binding SaveBookCommand}" />
     </Grid>
 </Window>

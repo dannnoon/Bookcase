@@ -71,6 +71,21 @@ namespace Bookcase.db
             }
         }
 
+        public static Book[] GetOwnedBooks()
+        {
+            using (var db = new BookcaseDB())
+            {
+                var books = from b in db.Books where b.Filter != FilterType.NOT_OWNED select b;
+
+                foreach (Book book in books)
+                {
+                    book.Genre = GetGenreById(book.GenreId, db);
+                }
+
+                return books.ToArray();
+            }
+        }
+
         public static void DeleteBook(int bookId)
         {
             using (var db = new BookcaseDB())

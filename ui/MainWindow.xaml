@@ -8,7 +8,7 @@
         xmlns:cv="clr-namespace:Bookcase.converters"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Biblioteczka"  MinHeight="600" MinWidth="800" FontFamily="Times New Roman" FontSize="16" Background="White">
+        Title="Biblioteczka"  MinHeight="600" MinWidth="800" FontFamily="Times New Roman" FontSize="16" Background="White" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <dc:MainWindowVM/>
     </Window.DataContext>
@@ -22,6 +22,7 @@
         <cv:FrameSizeConverter x:Key="FrameHeightConverter"/>
         <cv:FrameWidthConverter x:Key="FrameWidthConverter"/>
         <cv:BoolToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+        <cv:StringToVisibilityConverter x:Key="StringVisibilityConverter"/>
     </Window.Resources>
     <Grid >
         <Grid.ColumnDefinitions>
@@ -48,17 +49,19 @@
             <RadioButton Grid.Row="2" Content="Zaczęte" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[2]}" BorderThickness="0, 0, 2, 0"/>
             <RadioButton Grid.Row="3" Content="Nieprzeczytane" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[3]}" BorderThickness="0, 0, 2, 0"/>
             <RadioButton Grid.Row="4" Content="Nieposiadane" FontSize="28" Style="{StaticResource StandardToggleButtonStyle}" IsChecked="{Binding Filters[4]}" BorderThickness="0, 0, 2, 0"/>
-
         </Grid>
 
         <Grid DockPanel.Dock="Top" Margin="10" Grid.Column="1" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-
-            <TextBox Name="SearchBox" Foreground="{StaticResource Secondary}" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" MaxLines="1" Margin="0, 0, 10, 0" Style="{StaticResource StandardTextBox}"/>
-            <TextBlock Foreground="{StaticResource MainAlpha}" Text="Wyszukaj..." Grid.Column="0" Margin="2, 0, 10, 0" VerticalAlignment="Center" IsHitTestVisible="False">
+            
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="10, 0, 0, 0" TextAlignment="Center"
+                   Text="{Binding Books.Count, StringFormat=Ilość: {0}}" Foreground="{StaticResource SecondaryAlpha}"/>
+            <TextBox Name="SearchBox" Foreground="{StaticResource Secondary}" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" MaxLines="1" Margin="0, 0, 10, 0" Style="{StaticResource StandardTextBox}"/>
+            <TextBlock Foreground="{StaticResource MainAlpha}" Text="Wyszukaj..." Grid.Column="1" Margin="2, 0, 10, 0" VerticalAlignment="Center" IsHitTestVisible="False">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -70,10 +73,11 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <ComboBox Grid.Column="1" SelectedIndex="0" ItemsSource="{Binding Sorters}" SelectedItem="{Binding SortFilter}"/>
+            <ComboBox Grid.Column="2" SelectedIndex="0" ItemsSource="{Binding Sorters}" SelectedItem="{Binding SortFilter}"/>
         </Grid>
         <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Books, Mode=TwoWay}" Margin="0, 10, 20, 20" Name="BookList" Style="{StaticResource StandardListBoxStyle}"
-                 Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False">
+                 Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False" 
+                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Name="BookView" Margin="0, 0, 0, 8">
@@ -84,18 +88,27 @@
                         <Border Name="Frame" Grid.Column="0" BorderBrush="{StaticResource SecondaryAlpha}" BorderThickness="2"
                                 Width="{Binding ElementName=Frame, Path=ActualHeight, Converter={StaticResource FrameWidthConverter}}"
                                 Height="{Binding ElementName=BookList, Path=ActualHeight, Converter={StaticResource FrameHeightConverter}}">
-                            <TextBlock Text="Brak okładki" Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter={StaticResource BoolTrue}}" 
-                                       Foreground="{StaticResource SecondaryAlpha}" TextWrapping="WrapWithOverflow" FontSize="32" TextAlignment="Center" VerticalAlignment="Center"/>
+                            <Grid>
+                                <TextBlock Text="Brak okładki" Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter={StaticResource BoolTrue}}" 
+                                       Foreground="{StaticResource SecondaryAlpha}" TextWrapping="WrapWithOverflow" FontSize="30" TextAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="{Binding Cover}" Visibility="{Binding HasCover, Converter={StaticResource BoolVisibilityConverter}}" Stretch="Fill"/>
+                            </Grid>
                         </Border>
                         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10, 0, 0, 0">
-                            <TextBlock Text="{Binding Title}" FontSize="28" Foreground="{StaticResource Secondary}"/>
-                            <TextBlock Text="{Binding Author}" Foreground="{StaticResource Main}"/>
+                            <TextBlock Text="{Binding Title}" FontSize="28" Foreground="{StaticResource Secondary}" />
+                            <TextBlock Text="{Binding Author, StringFormat=Autor: {0}}" Foreground="{StaticResource Main}"/>
+                            <TextBlock Text="{Binding Genre.Name, StringFormat=Gatunek: {0}}" Foreground="{StaticResource Main}"/>
+                            <TextBlock Text="{Binding PublicationDate, StringFormat=Rok wydania: {0}}" Foreground="{StaticResource Main}"/>
+                            <TextBlock Text="{Binding Note, StringFormat=Notatka: {0}}" Foreground="{StaticResource RedAlpha}" MaxWidth="600" TextWrapping="WrapWithOverflow"
+                                       Visibility="{Binding Note, Converter={StaticResource StringVisibilityConverter}}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom" Margin="10, 0, 0, 0">
                             <Button Style="{StaticResource LightButtonStyle}" Content="Edytuj" FontSize="12"  Padding="8" Foreground="{StaticResource MainAlpha}"
                                     Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.EditBookCommand}" CommandParameter="{Binding}"/>
                             <Button Style="{StaticResource LightButtonStyle}" Content="Usuń" FontSize="12" Padding="8" Foreground="{StaticResource MainAlpha}" 
                                     Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.DeleteBookCommand}" CommandParameter="{Binding}"/>
+                            <Button Style="{StaticResource LightButtonStyle}" Content="Zanotuj" FontSize="12" Padding="8" Foreground="{StaticResource MainAlpha}" 
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.NoteCommand}" CommandParameter="{Binding}"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

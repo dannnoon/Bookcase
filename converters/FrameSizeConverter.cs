@@ -13,7 +13,7 @@ namespace Bookcase.converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             double width = (double) value;
-            return Math.Max(0, width / 3 - 15);
+            return Math.Max(0, width / 3 - 8.7);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

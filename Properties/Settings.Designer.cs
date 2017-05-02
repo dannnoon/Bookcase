@@ -26,8 +26,8 @@ namespace Bookcase.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\db\\BookcaseDB" +
-            ".mdf;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDb)\\v11.0;Initial Catalog=db;Integrated Security=True;Pooling=F" +
+            "alse")]
         public string BookcaseDBConnectionString {
             get {
                 return ((string)(this["BookcaseDBConnectionString"]));
